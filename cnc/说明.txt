@@ -1,0 +1,44 @@
+////////////////×××版本修改××////////////////////////////
+2017/6/30   添加每个轴的速度限制，增加move.min_speed 和move.max_speed
+            更改cnc_motor_conf为cnc_motor_init
+            更改cnc_conf为cnc_statr_conf 和 cnc_parameter_conf
+
+
+/////////////////×××对用户开放×××///////////////////////
+cnc_user.c        是需要用户自己添加 按键 和 显示 的执行函数
+
+cnc_user_gcode.c  用需要用户自己添加 G代码 的执行函数
+
+cnc_user_stm32_t2.是用户需要添加的 定时器的执行函数
+   
+cnc.h             外围API函数类型初始化 和 工作状态定义
+cncconf.h         定义管脚常量
+ 
+/////////////////×××内部封装×××///////////////////////       
+cnc_base.c        基本的cnc函数              
+                  制表函数
+                  速度转换函数
+                  长度转换函数
+cnc_base.h        cnc_base.c  的头定义
+
+cnc_move.c        cnc运动函数
+cnc_move.h        cnc_move.c  的头定义
+
+cnc_gcode.c       cnc g代码解析函数
+cnc_gcode.h       cnc_gcode.c  的头定义
+
+
+/////////////////×××开始使用×××///////////////////////   
+extern cnc_user_typedef user_driver;         /*用户代码驱动接口*/
+extern cnc_tim_api_typedef stm32_tim2;       /*定时器代码驱动接口*/
+extern cnc_gcode_api_typedef gcode_driver;   /*G代码驱动接口*/
+
+cnc_2conf(&user_cnc.stable,&user_cnc.x,&user_cnc.y)
+使用这段代码初始化CNC，就可以运行
+参数：stable  初速度 加速度等用于规划速度表格
+      x       gs和cp  X比例当量
+      y       gs和cp  Y比例当量
+
+开始使用
+cnc_xd(5,0,0,0,50,0);                 相对运动
+cnc_jd(-2,0,0,0,200,0);               绝对运动
